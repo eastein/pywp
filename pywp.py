@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import sys
 import pprint
 import urllib2
 import xml.parsers.expat
@@ -78,4 +81,4 @@ def parse(fh) :
 	pprint.pprint(ps.traces)
 
 if __name__ == '__main__' :
-	predict(41.837, -87.685)
+	predict(float(sys.argv[1]), float(sys.argv[2]))
