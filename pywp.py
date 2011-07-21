@@ -8,8 +8,10 @@ import xml.parsers.expat
 def predict(latitude, longitude) :
 	url = 'http://forecast.weather.gov/MapClick.php?lat=%0.6f&lon=%0.6f&FcstType=digitalDWML' % (latitude, longitude)
 	wstream = urllib2.urlopen(url)
-	parse(wstream)
-	wstream.close()
+	try :
+		return parse(wstream)
+	finally :
+		wstream.close()
 
 # TODO use time-layout to parse time zone correctly
 
@@ -77,8 +79,7 @@ def parse(fh) :
 
 	p.Parse(fh.read())
 
-	pprint.pprint(ps.layouts)
-	pprint.pprint(ps.traces)
+	return {'layouts' : ps.layouts, 'traces' : ps.traces}
 
 if __name__ == '__main__' :
-	predict(float(sys.argv[1]), float(sys.argv[2]))
+	pprint.pprint(predict(float(sys.argv[1]), float(sys.argv[2])))
