@@ -2,7 +2,7 @@ from zmq.core import context, socket, poll
 import zmq
 import json
 
-class WPC(threading.Thread) :
+class WPC(object) :
         def __init__(self, url) :
                 self.zmq_ctx = context.Context()
                 self.zmq_sock = socket.Socket(self.zmq_ctx, zmq.REQ)
