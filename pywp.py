@@ -6,7 +6,7 @@ import urllib2
 import xml.parsers.expat
 
 def predict(latitude, longitude) :
-	url = 'http://forecast.weather.gov/MapClick.php?lat=%0.6f&lon=%0.6f&FcstType=digitalDWML' % (latitude, longitude)
+	url = 'http://forecast.weather.gov/MapClick.php?lat=%0.6f&lon=%0.6f&FcstType=digitalDWML&product=time-series' % (latitude, longitude)
 	wstream = urllib2.urlopen(url)
 	parse(wstream)
 	wstream.close()
