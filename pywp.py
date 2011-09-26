@@ -72,7 +72,7 @@ def parse(fh) :
 			ps.traces[ps.trace_key].append(value)
 
 	p = xml.parsers.expat.ParserCreate()
-
+	p.SetParamEntityParsing(xml.parsers.expat.XML_PARAM_ENTITY_PARSING_NEVER)
 	p.StartElementHandler = start_element
 	p.EndElementHandler = end_element
 	p.CharacterDataHandler = char_data
