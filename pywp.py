@@ -17,16 +17,21 @@ def predict(latitude, longitude) :
 
 def parse(fh) :
 	class ParseState(object) :
-		pass
+		def __init__(self) :
+			self.layouts = {}
+			self.layout_key = None
+			self.element = None
+			self.traces = {}
+			self.trace_key = None
+			self.converter = None
+
+		def add_data(self, value) :
+			a, b = self.trace_key
+			self.traces.setdefault(a, dict())
+			self.traces[a].setdefault(b, list())
+			self.traces[a][b].append(value)
 
 	ps = ParseState()
-
-	ps.layouts = {}
-	ps.layout_key = None
-	ps.element = None
-	ps.traces = {}
-	ps.trace_key = None
-	ps.converter = None
 
 	useful_elements = [
 		'temperature',
@@ -45,14 +50,13 @@ def parse(fh) :
 		debug('Start element: %s %s' % (name, attrs))
 		ps.element = name
 		if name in useful_elements :
-			ps.trace_key = '%s.%s' % (name, attrs['type'])
+			ps.trace_key = (name, attrs['type'])
 			if (attrs['type'] == 'floating') :
 				ps.converter = float
 			else :
 				ps.converter = int
-			ps.traces.setdefault(ps.trace_key, [])
 		if 'xsi:nil' in attrs and name == 'value' :
-			ps.traces[ps.trace_key].append(None)
+			ps.add_data(None)
 	def end_element(name):
 		debug('End element: %s' % name)
 		ps.element = None
@@ -69,7 +73,7 @@ def parse(fh) :
 				value = ps.converter(data)
 			except ValueError :
 				value = None
-			ps.traces[ps.trace_key].append(value)
+			ps.add_data(value)
 
 	p = xml.parsers.expat.ParserCreate()
 	p.SetParamEntityParsing(xml.parsers.expat.XML_PARAM_ENTITY_PARSING_NEVER)
