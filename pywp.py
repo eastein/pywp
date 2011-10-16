@@ -68,7 +68,7 @@ def parse(fh) :
 			try :
 				value = ps.converter(data)
 			except ValueError :
-				pass # TODO handle this better?
+				value = None
 			ps.traces[ps.trace_key].append(value)
 
 	p = xml.parsers.expat.ParserCreate()
