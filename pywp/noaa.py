@@ -4,7 +4,10 @@ from __future__ import absolute_import
 import sys
 import pprint
 
-import urllib2
+try:
+    import urllib2 as request_module
+except ImportError:
+    import urllib.request as request_module
 
 import xml.parsers.expat
 
@@ -92,7 +95,7 @@ class Predictor(object):
 
 	def predict(self, dictionary_response=False) :
 		url = self.URL_PATTERN % (self.latitude, self.longitude)
-		wstream = urllib2.urlopen(url)
+		wstream = request_module.urlopen(url)
 		try :
 			return self.parse(wstream, dictionary_response=dictionary_response)
 		finally :
