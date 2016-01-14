@@ -1,8 +1,6 @@
 from __future__ import absolute_import
-#!/usr/bin/env python
 
 import sys
-import pprint
 
 try:
     import urllib2 as request_module
@@ -197,4 +195,5 @@ class Predictor(object):
             return self.__class__.Prediction(self, ps.layouts, ps.traces)
 
 if __name__ == '__main__':
+    import pprint
     pprint.pprint(predict(float(sys.argv[1]), float(sys.argv[2])))
