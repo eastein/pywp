@@ -196,4 +196,6 @@ class Predictor(object):
 
 if __name__ == '__main__':
     import pprint
-    pprint.pprint(predict(float(sys.argv[1]), float(sys.argv[2])))
+    predictor = Predictor(float(sys.argv[1]), float(sys.argv[2]))
+    prediction = predictor.predict(dictionary_response=True)
+    pprint.pprint(prediction)
