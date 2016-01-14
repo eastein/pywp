@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #!/usr/bin/env python
 
 import sys
@@ -60,7 +61,7 @@ class Predictor(object):
 			self.layouts = dict([
 				(k, TimeLayout(k, v))
 				for (k,v)
-				in self._raw_layouts.items()
+				in list(self._raw_layouts.items())
 			])
 
 			self._raw_traces = traces
@@ -68,7 +69,7 @@ class Predictor(object):
 				(k, Trace(self.get_layout(trace['time_layout']), trace['data']))
 				for
 				(k, trace)
-				in self._raw_traces.items()
+				in list(self._raw_traces.items())
 			])
 
 		def get_layout(self, key):
