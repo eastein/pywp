@@ -34,6 +34,7 @@ class TimeLayout(object):
         self.n_layouts = len(self.layout_buckets)
 
     def get_index(self, date_time):
+        date_time = Predictor.choose_datetime(date_time)
         i = -1
         for start_time, end_time in self.layout_buckets:
             i += 1
@@ -55,12 +56,45 @@ class Trace(object):
     def get_data(self, date_time):
         return self.data[self.layout.get_index(date_time)]
 
+    def get_data_by_index(self, index):
+        try:
+            return self.data[index]
+        except IndexError:
+            raise TimeOutOfRangeException
+
 
 class Predictor(object):
 
     @classmethod
     def now(cls):
         return datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+
+    @classmethod
+    def convert_utc_unix_timestamp_to_datetime(cls, unixts):
+        return datetime.datetime.utcfromtimestamp(unixts).replace(tzinfo=pytz.utc)
+
+    @classmethod
+    def choose_datetime(cls, p):
+        """
+        Given a value, turn it into a non-naive datetime.
+        None: now.
+        int: assume it's a UTC unix timestamp, convert.
+        float: assume it's a UTC unix timestamp, convert.
+        :param p: the input
+        :return: a datetime.datetime instance.
+        """
+        if p is None:
+            return cls.now()
+        elif isinstance(p, datetime.datetime):
+            return p
+        elif isinstance(p, int):
+            return cls.convert_utc_unix_timestamp_to_datetime(p)
+        elif isinstance(p, long):
+            return cls.convert_utc_unix_timestamp_to_datetime(p)
+        elif isinstance(p, float):
+            return cls.convert_utc_unix_timestamp_to_datetime(p)
+        else:
+            raise RuntimeError("Cannot understand datetime input given.")
 
     class Prediction(object):
 
@@ -88,7 +122,7 @@ class Predictor(object):
         def data_available(self):
             return list(self.traces.keys())
 
-        def get_data(self, name, data_type, date_time):
+        def get_data(self, name, data_type, date_time=None):
             if (name, data_type) not in self.traces:
                 raise NoSuchDataException
             else:
